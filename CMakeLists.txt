@@ -21,10 +21,12 @@ add_subdirectory(modules/MovieMaker)
 set(cpp_files
   VideoMaker.cpp
   VideoMakerMain.cpp
+  QmitkFFmpegWriter2.cpp
 	)
 
 set(header_files
   VideoMaker.h
+  QmitkFFmpegWriter2.h
 	)
 
 add_executable(${PROJECT_NAME} ${cpp_files})

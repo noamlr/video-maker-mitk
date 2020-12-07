@@ -12,7 +12,7 @@
 
 // #include <mitkGL.h>
 
-#include <QmitkFFmpegWriter.h>
+#include "QmitkFFmpegWriter2.h"
 #include <mitkRenderingManager.h>
 
 #include <mitkBaseRenderer.h>
@@ -129,7 +129,8 @@ void ReadPixels(std::unique_ptr<unsigned char[]>& frame, vtkRenderWindow* render
 QmitkAnimationItem* CreateDefaultAnimation(const QString& widgetKey){
   if (widgetKey == "Orbit"){
     //Total duration: 10 seg
-    return new QmitkOrbitAnimationItem(720, false, 30.0, 0.0, false);
+    //return new QmitkOrbitAnimationItem(4140, false, 120.0, 0.0, false);
+    return new QmitkOrbitAnimationItem(360, false, 10.0, 0.0, false);
   }
   return nullptr;
 }
@@ -162,6 +163,7 @@ void VideoMaker::CalculateTotalDuration(int fpsSpinBox)
 
   m_TotalDuration = totalDuration;
   m_NumFrames = static_cast<int>(totalDuration * fpsSpinBox);
+  cout<<"Duration: "<<m_TotalDuration<<", Frames"<<m_NumFrames<<endl;
 }
 
 void VideoMaker::InitializeRenderWindow()
@@ -174,11 +176,11 @@ void VideoMaker::InitializeRenderWindow()
 
   // Use it as a 3D view
   renderWindow->GetRenderer()->SetMapperID(mitk::BaseRenderer::Standard3D);
-  // renderWindow->resize(1024, 900);
-  // renderWindow->resize(512, 450);
-  renderWindow->resize(256, 225);
+  renderWindow->resize(1280, 1125);
+  //renderWindow->resize(1024, 900);
 
-  renderWindow->setAttribute(Qt::WA_DontShowOnScreen);
+  //NOAMLR
+  //renderWindow->setAttribute(Qt::WA_DontShowOnScreen);
   renderWindow->show();
 
 
@@ -189,24 +191,21 @@ void VideoMaker::InitializeRenderWindow()
   
   renderer->ResetCamera();
   vtkCamera* vtkcam = renderer->GetActiveCamera();
-  vtkcam->Zoom(1.9);
+  vtkcam->Zoom(2.1);
 
   vtkcam->Roll( 90 );
-  vtkcam->Azimuth( -7.5 );
 
-  vtkcam->Roll( 4 );
   vtkcam->Azimuth( 90 );
-  vtkcam->Elevation( 4 );
   vtkcam->Roll( -90 );
 
   if (nullptr != renderWindow){
     int fpsSpinBox = 30;
-    m_Timer = new QTimer(nullptr);
-    cout<<"Just 0: "<<static_cast<int>(1000.0 / fpsSpinBox)<<endl;
-    m_Timer->start(static_cast<int>(1000.0 / fpsSpinBox));
+    //m_Timer = new QTimer(nullptr);
+    //cout<<"Just 0: "<<static_cast<int>(1000.0 / fpsSpinBox)<<endl;
+    //m_Timer->start(static_cast<int>(1000.0 / fpsSpinBox));
 
-    m_FFmpegWriter = new QmitkFFmpegWriter(nullptr); 
-    m_Process = new QProcess(nullptr);
+    //m_FFmpegWriter = new QmitkFFmpegWriter(nullptr); 
+    m_FFmpegWriter = new QmitkFFmpegWriter2(); 
 
     const QString ffmpegPath =  "/usr/bin/ffmpeg"; // GetFFmpegPath();
     m_FFmpegWriter->SetFFmpegPath(ffmpegPath);
@@ -242,15 +241,11 @@ void VideoMaker::InitializeRenderWindow()
       auto frame = std::make_unique<unsigned char[]>(width * height * 3);
       m_FFmpegWriter->Start();
 
-
       for (m_CurrentFrame = 0; m_CurrentFrame < m_NumFrames; ++m_CurrentFrame){
         this->RenderCurrentFrame();
         ReadPixels(frame, m_renderWindow2, x, y, width, height);
         m_FFmpegWriter->WriteFrame(frame.get());
-        // for (int it = 0; it<=1000; it++) for (int ij = 0; ij<=10000; ij++){it++; it--;}
-        //m_Process->waitForBytesWritten(30000);
       }
-
       m_FFmpegWriter->Stop();
 
       m_CurrentFrame = 0;

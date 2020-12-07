@@ -34,7 +34,8 @@ found in the LICENSE file.
 
 class QmitkAnimationItem;
 class QmitkAnimationWidget;
-class QmitkFFmpegWriter;
+//class QmitkFFmpegWriter;
+class QmitkFFmpegWriter2;
 class QMenu;
 class QStandardItemModel;
 class QTimer;
@@ -75,7 +76,7 @@ class VideoMaker
     std::vector<std::pair<QmitkAnimationItem*, double>> GetActiveAnimations(double t) const;
 
 
-    QmitkFFmpegWriter* m_FFmpegWriter;
+    QmitkFFmpegWriter2* m_FFmpegWriter;
     // Ui::QmitkMovieMakerView* m_Ui;
     QStandardItemModel* m_AnimationModel;
     std::map<QString, QmitkAnimationWidget*> m_AnimationWidgets;
