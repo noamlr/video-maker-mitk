@@ -4,13 +4,13 @@ set (CMAKE_AUTOMOC ON)
 
 project(videomaker)
 
-set(MITK_SUPERBUILD_DIR "/home/noa/MITK-build")
-set(QT_DIR "/home/noa")
+set(MITK_SUPERBUILD_DIR "/home/guilherme/MITK-build")
+set(QT_DIR "/home/guilherme")
 
 set(CMAKE_PREFIX_PATH
 		"${MITK_SUPERBUILD_DIR}/MITK-build"
 		"${MITK_SUPERBUILD_DIR}/ep/src/VTK/CMake/"
-		"${QT_DIR}/Qt5.12.8/5.12.8/gcc_64/lib/cmake/Qt5"
+		"${QT_DIR}/Qt/5.12.9/gcc_64/lib/cmake/Qt5"
 		)
 
 find_package(MITK CONFIG REQUIRED)
@@ -34,6 +34,7 @@ target_link_libraries(  ${PROJECT_NAME} PUBLIC
                         MitkCore  
 						MitkQtWidgetsExt
 						MovieMaker
+						MitkSceneSerializationBase
 						)
 
 

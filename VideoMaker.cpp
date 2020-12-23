@@ -62,6 +62,7 @@ void VideoMaker::Initialize(){
 
     // Volume Rendering and Transfer function
     this->m_ResultNode->SetProperty("volumerendering", mitk::BoolProperty::New(true));
+    this->m_ResultNode->SetProperty("volumerendering.usegpu", mitk::BoolProperty::New(true));
     this->m_ResultNode->SetProperty("layer", mitk::IntProperty::New(1));
 
     mitk::TransferFunction::Pointer tf = mitk::TransferFunction::New();
