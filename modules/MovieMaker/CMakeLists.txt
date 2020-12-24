@@ -12,11 +12,13 @@ set(CMAKE_VERBOSE_MAKEFILE ON)
 set(CMAKE_COLOR_MAKEFILE   ON)
 
 if(NOT DEFINED MITK_SUPERBUILD_DIR)
-	set(MITK_SUPERBUILD_DIR "/home/guilherme/MITK-build")
+	# set(MITK_SUPERBUILD_DIR "/home/guilherme/MITK-build")
+	set(MITK_SUPERBUILD_DIR "/home/noa/MITK-build")
 endif()
 
 if(NOT DEFINED QT_PATH)
-		set(QT_PATH "/home/guilherme/Qt/5.12.9")
+		# set(QT_PATH "/home/guilherme/Qt/5.12.9")
+		set(QT_PATH "/home/noa/Qt5.12.8/5.12.8")
 endif()
 
 set(CMAKE_PREFIX_PATH

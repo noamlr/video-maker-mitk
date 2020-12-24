@@ -4,8 +4,10 @@ set (CMAKE_AUTOMOC ON)
 
 project(videomaker)
 
-set(MITK_SUPERBUILD_DIR "/home/guilherme/MITK-build")
-set(QT_DIR "/home/guilherme")
+# set(MITK_SUPERBUILD_DIR "/home/guilherme/MITK-build")
+set(MITK_SUPERBUILD_DIR "/home/noa/MITK-build")
+# set(QT_DIR "/home/guilherme")
+set(QT_DIR "/home/noa")
 
 set(CMAKE_PREFIX_PATH
 		"${MITK_SUPERBUILD_DIR}/MITK-build"

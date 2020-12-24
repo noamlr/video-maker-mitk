@@ -86,6 +86,10 @@ class VideoMaker
     double m_TotalDuration;
     int m_NumFrames;
     int m_CurrentFrame;
+    int m_Fps = 60;
+    double m_Time =2.0;
+    int m_Width = 512;
+    int m_Height = 512;
     vtkRenderWindow* m_renderWindow2;
     QProcess *m_Process;
     

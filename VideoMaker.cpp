@@ -127,11 +127,11 @@ void ReadPixels(std::unique_ptr<unsigned char[]>& frame, vtkRenderWindow* render
     glReadPixels(x, y, width, height, GL_RGB, GL_UNSIGNED_BYTE, frame.get());
 }
 
-QmitkAnimationItem* CreateDefaultAnimation(const QString& widgetKey){
+QmitkAnimationItem* CreateDefaultAnimation(const QString& widgetKey, double time){
   if (widgetKey == "Orbit"){
     //Total duration: 10 seg
     //return new QmitkOrbitAnimationItem(4140, false, 120.0, 0.0, false);
-    return new QmitkOrbitAnimationItem(360, false, 10.0, 0.0, false);
+    return new QmitkOrbitAnimationItem(360, false, time, 0.0, false);
   }
   return nullptr;
 }
@@ -178,10 +178,10 @@ void VideoMaker::InitializeRenderWindow()
   // Use it as a 3D view
   renderWindow->GetRenderer()->SetMapperID(mitk::BaseRenderer::Standard3D);
   //renderWindow->resize(1280, 1125);
-  renderWindow->resize(512, 450);
+  renderWindow->resize(this->m_Width+6, this->m_Height+6);
 
   //NOAMLR
-  //renderWindow->setAttribute(Qt::WA_DontShowOnScreen);
+  renderWindow->setAttribute(Qt::WA_DontShowOnScreen);
   renderWindow->show();
 
 
@@ -200,11 +200,8 @@ void VideoMaker::InitializeRenderWindow()
   vtkcam->Roll( -90 );
 
   if (nullptr != renderWindow){
-    int fpsSpinBox = 30;
-    //m_Timer = new QTimer(nullptr);
-    //cout<<"Just 0: "<<static_cast<int>(1000.0 / fpsSpinBox)<<endl;
-    //m_Timer->start(static_cast<int>(1000.0 / fpsSpinBox));
-
+    int fpsSpinBox = this->m_Fps;
+    
     //m_FFmpegWriter = new QmitkFFmpegWriter(nullptr); 
     m_FFmpegWriter = new QmitkFFmpegWriter2(); 
 
@@ -234,7 +231,7 @@ void VideoMaker::InitializeRenderWindow()
 
     m_AnimationModel = new QStandardItemModel(nullptr);
     const auto key = "Orbit"; //action->text();
-    m_AnimationModel->appendRow(QList<QStandardItem*>() << new QStandardItem(key) << CreateDefaultAnimation(key));
+    m_AnimationModel->appendRow(QList<QStandardItem*>() << new QStandardItem(key) << CreateDefaultAnimation(key, this->m_Time));
 
     this->CalculateTotalDuration(fpsSpinBox);
 
@@ -317,6 +314,10 @@ void VideoMaker::Load(int argc, char *argv[])
   bool readImage = false;
   bool readTF = false;
   bool readOuputDir = false;
+  bool readWidth = false;
+  bool readHeight = false;
+  bool readTime = false;
+  bool readFps = false;
   
   int i;
   for (i = 1; i < argc; ++i){
@@ -324,22 +325,74 @@ void VideoMaker::Load(int argc, char *argv[])
       readImage = true;
       readTF = false;
       readOuputDir = false;
+      readWidth = false;
+      readHeight = false;
+      readTime = false;
+      readFps = false;
       continue;
-    }
-      
+    } 
     if (strcmp(argv[i], "-tf") == 0){
       readImage = false;
       readTF = true;
       readOuputDir = false;
+      readWidth = false;
+      readHeight = false;
+      readTime = false;
+      readFps = false;
       continue;
     }
-
     if (strcmp(argv[i], "-o") == 0){
       readImage = false;
       readTF = false;
       readOuputDir = true;
+      readWidth = false;
+      readHeight = false;
+      readTime = false;
+      readFps = false;
       continue;
     }
+    if (strcmp(argv[i], "-w") == 0){
+      readImage = false;
+      readTF = false;
+      readOuputDir = false;
+      readWidth = true;
+      readHeight = false;
+      readTime = false;
+      readFps = false;
+      continue;
+    }
+    if (strcmp(argv[i], "-h") == 0){
+      readImage = false;
+      readTF = false;
+      readOuputDir = false;
+      readWidth = false;
+      readHeight = true;
+      readTime = false;
+      readFps = false;
+      continue;
+    }
+    if (strcmp(argv[i], "-t") == 0){
+      readImage = false;
+      readTF = false;
+      readOuputDir = false;
+      readWidth = false;
+      readHeight = false;
+      readTime = true;
+      readFps = false;
+      continue;
+    }
+    if (strcmp(argv[i], "-f") == 0){
+      readImage = false;
+      readTF = false;
+      readOuputDir = false;
+      readWidth = false;
+      readHeight = false;
+      readTime = false;
+      readFps = true;
+      continue;
+    }
+
+
 
     if(readImage){
       mitk::StandaloneDataStorage::SetOfObjects::Pointer dataNodes = mitk::IOUtil::Load(argv[i], *this->m_DataStorageOriginal);
@@ -353,6 +406,18 @@ void VideoMaker::Load(int argc, char *argv[])
     }
     if(readOuputDir){
       this->m_OutputDir=argv[i];
+    }
+    if(readWidth){
+      this->m_Width=atoi(argv[i]);
+    }
+    if(readHeight){
+      this->m_Height=atoi(argv[i]);
+    }
+    if(readTime){
+      this->m_Time=atof(argv[i]);
+    }
+    if(readFps){
+      this->m_Fps=atoi(argv[i]);
     }
   }
 }
